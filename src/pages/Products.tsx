@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -14,14 +15,14 @@ import preworkoutImg from '@/assets/category-preworkout.jpg';
 import vitaminsImg from '@/assets/category-vitamins.jpg';
 
 const allProducts = [
-  { id: 1, name: 'Elite Whey Protein', category: 'Protein', price: 59.99, image: wheyImg, servings: '30 Servings', goal: 'Recovery', highlight: '25g Protein' },
-  { id: 2, name: 'BCAA Complex', category: 'Amino Acids', price: 39.99, image: bcaaImg, servings: '40 Servings', goal: 'Endurance', highlight: '7g BCAAs' },
-  { id: 3, name: 'Mass Gainer Pro', category: 'Mass', price: 74.99, image: massImg, servings: '16 Servings', goal: 'Size', highlight: '1250 Calories' },
-  { id: 4, name: 'Omega-3 Premium', category: 'Wellness', price: 29.99, image: omegaImg, servings: '60 Capsules', goal: 'Health', highlight: 'EPA/DHA' },
-  { id: 5, name: 'Whey Isolate Gold', category: 'Protein', price: 69.99, image: proteinImg, servings: '28 Servings', goal: 'Lean Muscle', highlight: '27g Protein' },
-  { id: 6, name: 'Creatine Monohydrate', category: 'Creatine', price: 34.99, image: creatineImg, servings: '60 Servings', goal: 'Strength', highlight: '5g Pure' },
-  { id: 7, name: 'Explosive Pre-Workout', category: 'Pre-Workout', price: 44.99, image: preworkoutImg, servings: '30 Servings', goal: 'Energy', highlight: '300mg Caffeine' },
-  { id: 8, name: 'Multivitamin Elite', category: 'Vitamins', price: 24.99, image: vitaminsImg, servings: '90 Capsules', goal: 'Daily Health', highlight: '23 Nutrients' },
+  { id: '1', name: 'Elite Whey Protein', category: 'Protein', price: 59.99, image: wheyImg, servings: '30 Servings', goal: 'Recovery', highlight: '25g Protein' },
+  { id: '2', name: 'BCAA Complex', category: 'Amino Acids', price: 39.99, image: bcaaImg, servings: '40 Servings', goal: 'Endurance', highlight: '7g BCAAs' },
+  { id: '3', name: 'Mass Gainer Pro', category: 'Mass', price: 74.99, image: massImg, servings: '16 Servings', goal: 'Size', highlight: '1250 Calories' },
+  { id: '4', name: 'Omega-3 Premium', category: 'Wellness', price: 29.99, image: omegaImg, servings: '60 Capsules', goal: 'Health', highlight: 'EPA/DHA' },
+  { id: '5', name: 'Whey Isolate Gold', category: 'Protein', price: 69.99, image: proteinImg, servings: '28 Servings', goal: 'Lean Muscle', highlight: '27g Protein' },
+  { id: '6', name: 'Creatine Monohydrate', category: 'Creatine', price: 34.99, image: creatineImg, servings: '60 Servings', goal: 'Strength', highlight: '5g Pure' },
+  { id: '7', name: 'Explosive Pre-Workout', category: 'Pre-Workout', price: 44.99, image: preworkoutImg, servings: '30 Servings', goal: 'Energy', highlight: '300mg Caffeine' },
+  { id: '8', name: 'Multivitamin Elite', category: 'Vitamins', price: 24.99, image: vitaminsImg, servings: '90 Capsules', goal: 'Daily Health', highlight: '23 Nutrients' },
 ];
 
 const categories = ['All', 'Protein', 'Creatine', 'Pre-Workout', 'Vitamins', 'Amino Acids', 'Mass', 'Wellness'];
@@ -94,9 +95,10 @@ const Products = () => {
           <div className="flex-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredProducts.map((product, index) => (
-                <div
+                <Link
                   key={product.id}
-                  className="group gradient-card rounded-2xl overflow-hidden card-lift border border-border opacity-0 animate-fade-in-up"
+                  to={`/product/${product.id}`}
+                  className="group gradient-card rounded-2xl overflow-hidden card-lift border border-border opacity-0 animate-fade-in-up block"
                   style={{ animationDelay: `${index * 0.05}s`, animationFillMode: 'forwards' }}
                 >
                   <div className="aspect-square overflow-hidden img-zoom">
@@ -113,10 +115,12 @@ const Products = () => {
                     <div className="text-sm text-primary font-semibold mb-4">{product.highlight}</div>
                     <div className="flex items-center justify-between">
                       <span className="font-display text-2xl text-foreground">${product.price}</span>
-                      <Button variant="default" size="sm">View Details</Button>
+                      <Button variant="default" size="sm" asChild>
+                        <span>View Details</span>
+                      </Button>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 

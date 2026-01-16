@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-gym.jpg';
 
@@ -47,11 +48,11 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in"
             style={{ animationDelay: '0.7s' }}
           >
-            <Button variant="hero" size="xl">
-              Shop Products
+            <Button variant="hero" size="xl" asChild>
+              <Link to="/products">Shop Products</Link>
             </Button>
-            <Button variant="heroOutline" size="xl">
-              Learn More
+            <Button variant="heroOutline" size="xl" asChild>
+              <Link to="/about">Learn More</Link>
             </Button>
           </div>
         </div>

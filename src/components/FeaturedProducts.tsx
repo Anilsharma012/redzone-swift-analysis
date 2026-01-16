@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import wheyImg from '@/assets/product-whey.jpg';
 import bcaaImg from '@/assets/product-bcaa.jpg';
@@ -6,7 +7,7 @@ import omegaImg from '@/assets/product-omega.jpg';
 
 const products = [
   {
-    id: 1,
+    id: '1',
     name: 'Elite Whey Protein',
     category: 'Protein',
     price: 59.99,
@@ -15,7 +16,7 @@ const products = [
     goal: 'Recovery',
   },
   {
-    id: 2,
+    id: '2',
     name: 'BCAA Complex',
     category: 'Amino Acids',
     price: 39.99,
@@ -24,7 +25,7 @@ const products = [
     goal: 'Endurance',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Mass Gainer Pro',
     category: 'Mass',
     price: 74.99,
@@ -33,7 +34,7 @@ const products = [
     goal: 'Size',
   },
   {
-    id: 4,
+    id: '4',
     name: 'Omega-3 Premium',
     category: 'Wellness',
     price: 29.99,
@@ -55,9 +56,10 @@ export function FeaturedProducts() {
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product, index) => (
-            <div
+            <Link
               key={product.id}
-              className="group gradient-card rounded-2xl overflow-hidden card-lift border border-border opacity-0 animate-fade-in-up"
+              to={`/product/${product.id}`}
+              className="group gradient-card rounded-2xl overflow-hidden card-lift border border-border opacity-0 animate-fade-in-up block"
               style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'forwards' }}
             >
               {/* Image */}
@@ -93,19 +95,19 @@ export function FeaturedProducts() {
                   <span className="font-display text-2xl text-foreground">
                     ${product.price}
                   </span>
-                  <Button variant="outline" size="sm">
-                    View Details
+                  <Button variant="outline" size="sm" asChild>
+                    <span>View Details</span>
                   </Button>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
         {/* View All Button */}
         <div className="mt-12 text-center">
-          <Button variant="default" size="lg">
-            View All Products
+          <Button variant="default" size="lg" asChild>
+            <Link to="/products">View All Products</Link>
           </Button>
         </div>
       </div>

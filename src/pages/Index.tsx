@@ -2,6 +2,7 @@ import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { CategoryCards } from '@/components/CategoryCards';
 import { FeaturedProducts } from '@/components/FeaturedProducts';
+import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 import { ScrollToTop } from '@/components/ScrollToTop';
 
@@ -12,6 +13,7 @@ const Index = () => {
       <Hero />
       <CategoryCards />
       <FeaturedProducts />
+      <Newsletter />
       <Footer />
       <ScrollToTop />
     </div>
