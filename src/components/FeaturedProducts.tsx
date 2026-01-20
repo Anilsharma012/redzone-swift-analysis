@@ -8,39 +8,35 @@ import omegaImg from '@/assets/product-omega.jpg';
 const products = [
   {
     id: '1',
-    name: 'Elite Whey Protein',
-    category: 'Protein',
-    price: 59.99,
+    name: 'BPC-157 Peptide',
+    category: 'Peptide',
     image: wheyImg,
-    servings: '30 Servings',
+    servings: '5mg/vial',
     goal: 'Recovery',
   },
   {
     id: '2',
-    name: 'BCAA Complex',
-    category: 'Amino Acids',
-    price: 39.99,
+    name: 'Testosterone Cypionate',
+    category: 'Injectable',
     image: bcaaImg,
-    servings: '40 Servings',
-    goal: 'Endurance',
+    servings: '250mg/ml',
+    goal: 'Performance',
   },
   {
     id: '3',
-    name: 'Mass Gainer Pro',
-    category: 'Mass',
-    price: 74.99,
+    name: 'Semaglutide',
+    category: 'Fat Loss',
     image: massImg,
-    servings: '16 Servings',
-    goal: 'Size',
+    servings: '5mg/vial',
+    goal: 'Weight Management',
   },
   {
     id: '4',
-    name: 'Omega-3 Premium',
-    category: 'Wellness',
-    price: 29.99,
+    name: 'Tamoxifen Citrate',
+    category: 'SERMs',
     image: omegaImg,
-    servings: '60 Capsules',
-    goal: 'Health',
+    servings: '20mg/tab',
+    goal: 'PCT',
   },
 ];
 
@@ -90,15 +86,10 @@ export function FeaturedProducts() {
                   <span>{product.goal}</span>
                 </div>
 
-                {/* Price & CTA */}
-                <div className="flex items-center justify-between">
-                  <span className="font-display text-2xl text-foreground">
-                    ${product.price}
-                  </span>
-                  <Button variant="outline" size="sm" asChild>
-                    <span>View Details</span>
-                  </Button>
-                </div>
+                {/* CTA */}
+                <Button variant="outline" size="sm" asChild>
+                  <span>View Details</span>
+                </Button>
               </div>
             </Link>
           ))}

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-gym.jpg';
+import logoImg from '@/assets/logo-hugelabs.png';
 
 export function Hero() {
   return (
@@ -19,11 +20,13 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto">
-          {/* Brand Mark */}
+          {/* Brand Logo */}
           <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <span className="font-display text-8xl md:text-9xl tracking-widest text-primary animate-pulse-glow inline-block">
-              RZ
-            </span>
+            <img 
+              src={logoImg} 
+              alt="HugeLabs Health Supplement" 
+              className="h-32 md:h-40 w-auto mx-auto animate-pulse-glow"
+            />
           </div>
           
           {/* Headline */}
@@ -39,7 +42,7 @@ export function Hero() {
             className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto mb-10 opacity-0 animate-fade-in"
             style={{ animationDelay: '0.5s' }}
           >
-            Premium Sports Nutrition & Performance Supplements for serious athletes. 
+            Premium Health Supplements & Performance Products for serious athletes. 
             Fuel your ambition with elite-grade formulas.
           </p>
           

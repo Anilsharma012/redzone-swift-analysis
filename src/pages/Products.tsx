@@ -15,17 +15,17 @@ import preworkoutImg from '@/assets/category-preworkout.jpg';
 import vitaminsImg from '@/assets/category-vitamins.jpg';
 
 const allProducts = [
-  { id: '1', name: 'Elite Whey Protein', category: 'Protein', price: 59.99, image: wheyImg, servings: '30 Servings', goal: 'Recovery', highlight: '25g Protein' },
-  { id: '2', name: 'BCAA Complex', category: 'Amino Acids', price: 39.99, image: bcaaImg, servings: '40 Servings', goal: 'Endurance', highlight: '7g BCAAs' },
-  { id: '3', name: 'Mass Gainer Pro', category: 'Mass', price: 74.99, image: massImg, servings: '16 Servings', goal: 'Size', highlight: '1250 Calories' },
-  { id: '4', name: 'Omega-3 Premium', category: 'Wellness', price: 29.99, image: omegaImg, servings: '60 Capsules', goal: 'Health', highlight: 'EPA/DHA' },
-  { id: '5', name: 'Whey Isolate Gold', category: 'Protein', price: 69.99, image: proteinImg, servings: '28 Servings', goal: 'Lean Muscle', highlight: '27g Protein' },
-  { id: '6', name: 'Creatine Monohydrate', category: 'Creatine', price: 34.99, image: creatineImg, servings: '60 Servings', goal: 'Strength', highlight: '5g Pure' },
-  { id: '7', name: 'Explosive Pre-Workout', category: 'Pre-Workout', price: 44.99, image: preworkoutImg, servings: '30 Servings', goal: 'Energy', highlight: '300mg Caffeine' },
-  { id: '8', name: 'Multivitamin Elite', category: 'Vitamins', price: 24.99, image: vitaminsImg, servings: '90 Capsules', goal: 'Daily Health', highlight: '23 Nutrients' },
+  { id: '1', name: 'BPC-157 Peptide', category: 'Peptide', image: wheyImg, servings: '5mg/vial', goal: 'Recovery', highlight: 'Healing' },
+  { id: '2', name: 'Testosterone Cypionate', category: 'Injectable', image: bcaaImg, servings: '250mg/ml', goal: 'Performance', highlight: 'TRT' },
+  { id: '3', name: 'Semaglutide', category: 'Fat Loss', image: massImg, servings: '5mg/vial', goal: 'Weight Management', highlight: 'GLP-1' },
+  { id: '4', name: 'Tamoxifen Citrate', category: 'SERMs', image: omegaImg, servings: '20mg/tab', goal: 'PCT', highlight: 'Anti-E' },
+  { id: '5', name: 'TB-500 Peptide', category: 'Peptide', image: proteinImg, servings: '5mg/vial', goal: 'Recovery', highlight: 'Tissue Repair' },
+  { id: '6', name: 'Testosterone Enanthate', category: 'Injectable', image: creatineImg, servings: '250mg/ml', goal: 'Performance', highlight: 'Long Ester' },
+  { id: '7', name: 'Tirzepatide', category: 'Fat Loss', image: preworkoutImg, servings: '10mg/vial', goal: 'Weight Loss', highlight: 'GIP/GLP-1' },
+  { id: '8', name: 'Clomiphene Citrate', category: 'SERMs', image: vitaminsImg, servings: '50mg/tab', goal: 'PCT', highlight: 'Fertility' },
 ];
 
-const categories = ['All', 'Protein', 'Creatine', 'Pre-Workout', 'Vitamins', 'Amino Acids', 'Mass', 'Wellness'];
+const categories = ['All', 'Peptide', 'Injectable', 'Fat Loss', 'SERMs'];
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -46,7 +46,7 @@ const Products = () => {
         <div className="container mx-auto px-4 text-center">
           <h1 className="section-title mb-4">Our Products</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Premium sports nutrition crafted for peak performance. Every formula designed for serious athletes.
+            Premium health supplements crafted for peak performance. Every formula designed for serious athletes.
           </p>
         </div>
       </div>
@@ -113,12 +113,9 @@ const Products = () => {
                       <span>{product.goal}</span>
                     </div>
                     <div className="text-sm text-primary font-semibold mb-4">{product.highlight}</div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-display text-2xl text-foreground">${product.price}</span>
-                      <Button variant="default" size="sm" asChild>
-                        <span>View Details</span>
-                      </Button>
-                    </div>
+                    <Button variant="default" size="sm" asChild>
+                      <span>View Details</span>
+                    </Button>
                   </div>
                 </Link>
               ))}
