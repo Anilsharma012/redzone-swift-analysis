@@ -29,8 +29,8 @@ export function Newsletter() {
     
     setIsSubmitting(false);
     setIsSubscribed(true);
-    toast.success('Welcome to the REDZONE family!', {
-      description: 'Check your inbox for your 15% discount code.',
+    toast.success('Welcome to the HugeLabs family!', {
+      description: 'Check your inbox for your discount code.',
     });
   };
 
@@ -49,17 +49,17 @@ export function Newsletter() {
 
           {/* Title */}
           <h2 className="font-display text-4xl md:text-5xl text-foreground uppercase tracking-wider mb-4">
-            Get <span className="text-primary">15% Off</span> Your First Order
+            Get <span className="text-primary">Exclusive</span> Updates
           </h2>
 
           {/* Subtitle */}
           <p className="text-lg text-foreground-muted mb-8 max-w-xl mx-auto">
-            Join the REDZONE newsletter for exclusive deals, new product launches, training tips, and insider access to flash sales.
+            Join the HugeLabs newsletter for exclusive deals, new product launches, and insider access to flash sales.
           </p>
 
           {/* Offer Badges */}
           <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
-            {['Free Shipping over $75', 'Exclusive Deals', 'Early Access'].map((offer, i) => (
+            {['Free Shipping', 'Exclusive Deals', 'Early Access'].map((offer, i) => (
               <div
                 key={offer}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-secondary border border-border rounded-full text-sm"
@@ -91,19 +91,19 @@ export function Newsletter() {
                 disabled={isSubmitting}
                 className="shrink-0"
               >
-                {isSubmitting ? 'Joining...' : 'Get My 15% Off'}
+                {isSubmitting ? 'Joining...' : 'Subscribe Now'}
               </Button>
             </form>
           ) : (
             <div className="flex items-center justify-center gap-3 py-4 px-6 bg-primary/10 border border-primary/20 rounded-xl max-w-lg mx-auto">
               <CheckCircle className="h-6 w-6 text-primary" />
-              <span className="text-foreground font-medium">You're subscribed! Check your email for your discount code.</span>
+              <span className="text-foreground font-medium">You're subscribed! Check your email for updates.</span>
             </div>
           )}
 
           {/* Privacy Note */}
           <p className="mt-6 text-xs text-muted-foreground">
-            By subscribing, you agree to receive marketing emails from REDZONE. Unsubscribe anytime. We respect your privacy.
+            By subscribing, you agree to receive marketing emails from HugeLabs. Unsubscribe anytime. We respect your privacy.
           </p>
         </div>
       </div>

@@ -19,14 +19,14 @@ const About = () => {
       {/* Hero Section */}
       <div className="relative pt-20 min-h-[70vh] flex items-center">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="REDZONE Athletes" className="w-full h-full object-cover" />
+          <img src={heroImg} alt="HugeLabs Athletes" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-background/80" />
         </div>
         <div className="relative z-10 container mx-auto px-4">
           <div className="max-w-3xl">
             <h1 className="section-title text-left mb-6">Our Story</h1>
             <p className="text-lg text-foreground-muted leading-relaxed">
-              REDZONE was born from a simple frustration: too many supplements promise everything and deliver nothing. 
+              HugeLabs Health Supplement was born from a simple frustration: too many supplements promise everything and deliver nothing. 
               Founded by athletes who were tired of gimmicks, we set out to create what the industry was missing—pure, 
               powerful formulas that actually work.
             </p>
@@ -44,7 +44,7 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-foreground-muted">
                 <p>
-                  We don't just make supplements—we fuel ambition. Every product in the REDZONE lineup is designed 
+                  We don't just make supplements—we fuel ambition. Every product in the HugeLabs lineup is designed 
                   with one goal: to help you unlock your maximum potential.
                 </p>
                 <p>
@@ -52,7 +52,7 @@ const About = () => {
                   No empty promises. Just pure performance nutrition backed by science.
                 </p>
                 <p>
-                  Join thousands of athletes who trust REDZONE to power their journey. Because when you're serious 
+                  Join thousands of athletes who trust HugeLabs to power their journey. Because when you're serious 
                   about results, you need a brand that's serious about quality.
                 </p>
               </div>

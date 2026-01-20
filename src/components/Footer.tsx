@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import logoImg from '@/assets/logo-hugelabs.png';
 
 const footerLinks = {
   brand: {
-    title: 'REDZONE',
+    title: 'HUGELABS',
     links: [
       { name: 'Our Story', href: '/about' },
       { name: 'Quality Promise', href: '/about#quality' },
@@ -14,10 +15,10 @@ const footerLinks = {
   categories: {
     title: 'Categories',
     links: [
-      { name: 'Protein & Recovery', href: '/products/protein' },
-      { name: 'Strength & Power', href: '/products/creatine' },
-      { name: 'Pre-Workout & Energy', href: '/products/preworkout' },
-      { name: 'Wellness & Vitamins', href: '/products/vitamins' },
+      { name: 'Peptide', href: '/products/peptide' },
+      { name: 'Injectable', href: '/products/injectable' },
+      { name: 'Anti Obesity / Fat Loss', href: '/products/fat-loss' },
+      { name: 'SERMs', href: '/products/serms' },
     ],
   },
   support: {
@@ -56,17 +57,17 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-6">
-              <span className="font-display text-4xl tracking-widest text-primary">RZ</span>
+              <img src={logoImg} alt="HugeLabs Health Supplement" className="h-16 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground mb-6">
-              Premium sports nutrition for athletes who demand the best. Fuel your potential.
+              Premium health supplements for athletes who demand the best. Fuel your potential.
             </p>
             
             {/* Contact Info */}
             <div className="space-y-3 text-sm text-muted-foreground">
-              <a href="mailto:support@redzone.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="mailto:support@hugelabs.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Mail className="h-4 w-4" />
-                support@redzone.com
+                support@hugelabs.com
               </a>
               <a href="tel:+18001234567" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Phone className="h-4 w-4" />
@@ -118,14 +119,14 @@ export function Footer() {
         {/* Disclaimer */}
         <div className="mt-12 pt-8 border-t border-border">
           <p className="text-xs text-muted-foreground text-center max-w-4xl mx-auto">
-            <strong>Disclaimer:</strong> This site sells legal sports nutrition products only. These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare professional before starting any supplement regimen.
+            <strong>Disclaimer:</strong> This site sells health supplement products. These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare professional before starting any supplement regimen.
           </p>
         </div>
 
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} REDZONE. All rights reserved.
+            © {new Date().getFullYear()} HUGELABS HEALTH SUPPLEMENT. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <Link to="/privacy" className="hover:text-foreground transition-colors">

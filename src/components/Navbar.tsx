@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Search, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { toast } from 'sonner';
+import logoImg from '@/assets/logo-hugelabs.png';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -10,10 +14,10 @@ const navLinks = [
     name: 'Products', 
     href: '/products',
     dropdown: [
-      { name: 'Protein & Recovery', href: '/products/protein' },
-      { name: 'Strength & Power', href: '/products/creatine' },
-      { name: 'Pre-Workout & Energy', href: '/products/preworkout' },
-      { name: 'Wellness & Vitamins', href: '/products/vitamins' },
+      { name: 'Peptide', href: '/products/peptide' },
+      { name: 'Injectable', href: '/products/injectable' },
+      { name: 'Anti Obesity / Fat Loss', href: '/products/fat-loss' },
+      { name: 'SERMs', href: '/products/serms' },
     ]
   },
   { name: 'About', href: '/about' },
@@ -25,6 +29,8 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [trackingCode, setTrackingCode] = useState('');
+  const [verifyDialogOpen, setVerifyDialogOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -34,6 +40,20 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleVerifyProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trackingCode.trim()) {
+      toast.error('Please enter a QR code or tracking number');
+      return;
+    }
+    // Simulate verification
+    toast.success('Product Verified!', {
+      description: `Your product with code "${trackingCode}" is authentic.`,
+    });
+    setTrackingCode('');
+    setVerifyDialogOpen(false);
+  };
 
   return (
     <nav
@@ -47,14 +67,16 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <span className="font-display text-3xl tracking-wider text-primary">RZ</span>
-            <span className="hidden sm:block font-display text-2xl tracking-widest text-foreground">/</span>
-            <span className="hidden sm:block font-display text-2xl tracking-widest text-foreground">REDZONE</span>
+          <Link to="/" className="flex items-center gap-3">
+            <img src={logoImg} alt="HugeLabs Health Supplement" className="h-14 w-auto" />
+            <div className="hidden md:flex flex-col">
+              <span className="font-display text-lg tracking-wider text-foreground leading-tight">HUGELABS</span>
+              <span className="text-xs text-primary tracking-widest">HEALTH SUPPLEMENT</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <div key={link.name} className="relative">
                 {link.dropdown ? (
@@ -78,7 +100,7 @@ export function Navbar() {
                     {/* Dropdown */}
                     <div
                       className={cn(
-                        'absolute top-full left-0 mt-2 w-56 bg-card border border-border rounded-xl shadow-lg overflow-hidden transition-all duration-200',
+                        'absolute top-full left-0 mt-2 w-56 bg-card border border-border rounded-xl shadow-lg overflow-hidden transition-all duration-200 z-50',
                         dropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
                       )}
                     >
@@ -108,17 +130,95 @@ export function Navbar() {
                 )}
               </div>
             ))}
+
+            {/* Verify Product Button */}
+            <Dialog open={verifyDialogOpen} onOpenChange={setVerifyDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2 ml-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                  <QrCode className="h-4 w-4" />
+                  <span>Verify Product</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md bg-card border-border">
+                <DialogHeader>
+                  <DialogTitle className="font-display text-2xl uppercase tracking-wider text-center">Verify Your Product</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Enter the QR code or tracking number found on your product packaging to verify authenticity.
+                  </p>
+                  <form onSubmit={handleVerifyProduct} className="space-y-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Enter QR code or tracking number"
+                        value={trackingCode}
+                        onChange={(e) => setTrackingCode(e.target.value)}
+                        className="h-12 pl-10 bg-secondary border-border"
+                      />
+                    </div>
+                    <Button type="submit" variant="hero" className="w-full" size="lg">
+                      <QrCode className="h-4 w-4 mr-2" />
+                      Verify Now
+                    </Button>
+                  </form>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Protect yourself from counterfeit products. Only purchase from authorized retailers.
+                  </p>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-          >
-            {isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
+          <div className="flex items-center gap-2 lg:hidden">
+            {/* Mobile Verify Button */}
+            <Dialog open={verifyDialogOpen} onOpenChange={setVerifyDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-primary">
+                  <QrCode className="h-5 w-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md bg-card border-border">
+                <DialogHeader>
+                  <DialogTitle className="font-display text-2xl uppercase tracking-wider text-center">Verify Your Product</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Enter the QR code or tracking number found on your product packaging to verify authenticity.
+                  </p>
+                  <form onSubmit={handleVerifyProduct} className="space-y-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Enter QR code or tracking number"
+                        value={trackingCode}
+                        onChange={(e) => setTrackingCode(e.target.value)}
+                        className="h-12 pl-10 bg-secondary border-border"
+                      />
+                    </div>
+                    <Button type="submit" variant="hero" className="w-full" size="lg">
+                      <QrCode className="h-4 w-4 mr-2" />
+                      Verify Now
+                    </Button>
+                  </form>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Protect yourself from counterfeit products. Only purchase from authorized retailers.
+                  </p>
+                </div>
+              </DialogContent>
+            </Dialog>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+            >
+              {isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
