@@ -63,8 +63,13 @@ const Products = () => {
     setCategories(storedCategories);
   }, []);
 
-  const filteredProducts = allProducts.filter((product) => {
-    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+  // Get category list for filters
+  const categoryOptions = ['All', ...categories.map(c => c.name)];
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory === 'All' ||
+      product.category === selectedCategory.toLowerCase().replace(/\s+/g, '-') ||
+      categoryLabels[product.category] === selectedCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
