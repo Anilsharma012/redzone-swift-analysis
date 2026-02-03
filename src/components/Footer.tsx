@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-import logoImg from '@/assets/logo-hugelabs.png';
+import logoImg from '@/assets/logo-hugelabz.png';
 
 const footerLinks = {
   brand: {
@@ -65,17 +65,17 @@ export function Footer() {
             
             {/* Contact Info */}
             <div className="space-y-3 text-sm text-muted-foreground">
-              <a href="mailto:support@hugelabs.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="mailto:info@hugelabz.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Mail className="h-4 w-4" />
-                support@hugelabs.com
+                info@hugelabz.com
               </a>
-              <a href="tel:+18001234567" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="tel:+923001234567" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Phone className="h-4 w-4" />
-                1-800-123-4567
+                +92 300 1234567
               </a>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                Los Angeles, CA
+                Lahore, Pakistan
               </div>
             </div>
 

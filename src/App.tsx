@@ -11,6 +11,16 @@ import Auth from "./pages/Auth";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
+// Admin Pages
+import AdminLayout from "./pages/admin/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import ProductsManagement from "./pages/admin/ProductsManagement";
+import CategoriesManagement from "./pages/admin/CategoriesManagement";
+import SerialsManagement from "./pages/admin/SerialsManagement";
+
+// User Pages
+import UserDashboard from "./pages/user/UserDashboard";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -27,6 +37,18 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* User Dashboard */}
+          <Route path="/dashboard" element={<UserDashboard />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<ProductsManagement />} />
+            <Route path="categories" element={<CategoriesManagement />} />
+            <Route path="serials" element={<SerialsManagement />} />
+          </Route>
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

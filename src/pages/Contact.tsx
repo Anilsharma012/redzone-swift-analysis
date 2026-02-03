@@ -55,10 +55,10 @@ const Contact = () => {
           {/* Contact Info */}
           <div className="lg:col-span-1 space-y-6">
             {[
-              { icon: Mail, title: 'Email Us', content: 'support@redzone.com', href: 'mailto:support@redzone.com' },
-              { icon: Phone, title: 'Call Us', content: '1-800-123-4567', href: 'tel:+18001234567' },
-              { icon: MapPin, title: 'Visit Us', content: '123 Fitness Ave, Los Angeles, CA 90001', href: '#' },
-              { icon: Clock, title: 'Business Hours', content: 'Mon-Fri: 9AM-6PM PST', href: '#' },
+            { icon: Mail, title: 'Email Us', content: 'info@hugelabz.com', href: 'mailto:info@hugelabz.com' },
+              { icon: Phone, title: 'Call Us', content: '+92 300 1234567', href: 'tel:+923001234567' },
+              { icon: MapPin, title: 'Visit Us', content: 'Lahore, Pakistan', href: '#' },
+              { icon: Clock, title: 'Business Hours', content: 'Mon-Sat: 10AM-8PM PKT', href: '#' },
             ].map((item, index) => (
               <a
                 key={item.title}
