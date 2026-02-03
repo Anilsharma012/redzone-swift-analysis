@@ -23,6 +23,7 @@ export default function ProductsManagement() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [form, setForm] = useState({ name: '', description: '', category: '', image: '' });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     setProducts(getProducts());
