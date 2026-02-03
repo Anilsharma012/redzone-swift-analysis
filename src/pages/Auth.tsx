@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
+import { toast } from 'sonner';
+import { loginUser, registerUser, getCurrentUser } from '@/lib/store';
+import logoImg from '@/assets/logo-hugelabz.png';
 
 const Auth = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,10 +24,58 @@ const Auth = () => {
     rememberMe: false,
   });
 
+  const redirect = searchParams.get('redirect') || '/dashboard';
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (user) {
+      if (user.role === 'admin' && redirect.startsWith('/admin')) {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [navigate, redirect]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle authentication
-    console.log('Form submitted:', formData);
+    setLoading(true);
+
+    setTimeout(() => {
+      if (isLogin) {
+        const user = loginUser(formData.email, formData.password);
+        if (user) {
+          toast.success(`Welcome back, ${user.name}!`);
+          if (user.role === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate(redirect);
+          }
+        } else {
+          toast.error('Invalid email or password');
+        }
+      } else {
+        if (!formData.name || !formData.email || !formData.password) {
+          toast.error('Please fill all fields');
+          setLoading(false);
+          return;
+        }
+        if (formData.password.length < 6) {
+          toast.error('Password must be at least 6 characters');
+          setLoading(false);
+          return;
+        }
+        const user = registerUser(formData.email, formData.password, formData.name);
+        if (user) {
+          loginUser(formData.email, formData.password);
+          toast.success('Account created successfully!');
+          navigate(redirect);
+        } else {
+          toast.error('This email is already registered');
+        }
+      }
+      setLoading(false);
+    }, 500);
   };
 
   return (
@@ -33,12 +88,23 @@ const Auth = () => {
           <div className="gradient-card rounded-2xl border border-border p-8 animate-scale-in">
             {/* Header */}
             <div className="text-center mb-8">
-              <span className="font-display text-4xl text-primary">RZ</span>
-              <h1 className="font-display text-3xl text-foreground uppercase tracking-wider mt-4">
-                {isLogin ? 'Welcome Back' : 'Join REDZONE'}
+              <img src={logoImg} alt="HugeLabs" className="h-16 mx-auto mb-4" />
+              <h1 className="font-display text-3xl text-foreground uppercase tracking-wider">
+                {isLogin ? 'Welcome Back' : 'Join HUGELABZ'}
               </h1>
               <p className="text-muted-foreground mt-2">
                 {isLogin ? 'Sign in to your account' : 'Create your account to get started'}
+              </p>
+            </div>
+
+            {/* Admin Login Hint */}
+            <div className="mb-6 p-4 rounded-xl bg-primary/10 border border-primary/20">
+              <div className="flex items-center gap-2 text-sm text-primary mb-2">
+                <Shield className="h-4 w-4" />
+                <span className="font-medium">Admin Access</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Admin: admin@hugelabz.com / admin123
               </p>
             </div>
 
@@ -113,8 +179,12 @@ const Auth = () => {
                 </div>
               )}
 
-              <Button type="submit" variant="hero" size="lg" className="w-full">
-                {isLogin ? 'Sign In' : 'Create Account'}
+              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+                {loading ? (
+                  <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  isLogin ? 'Sign In' : 'Create Account'
+                )}
               </Button>
             </form>
 

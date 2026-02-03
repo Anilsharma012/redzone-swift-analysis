@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-gym.jpg';
-import logoImg from '@/assets/logo-hugelabs.png';
+import logoImg from '@/assets/logo-hugelabz.png';
 
 export function Hero() {
   return (

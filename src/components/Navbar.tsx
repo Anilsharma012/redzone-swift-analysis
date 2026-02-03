@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import logoImg from '@/assets/logo-hugelabs.png';
+import { verifySerialNumber, getCurrentUser } from '@/lib/store';
+import logoImg from '@/assets/logo-hugelabz.png';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -21,7 +22,7 @@ const navLinks = [
     ]
   },
   { name: 'About', href: '/about' },
-  { name: 'Authenticate', href: '/auth' },
+  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Contact Us', href: '/contact' },
 ];
 
@@ -47,10 +48,20 @@ export function Navbar() {
       toast.error('Please enter a QR code or tracking number');
       return;
     }
-    // Simulate verification
-    toast.success('Product Verified!', {
-      description: `Your product with code "${trackingCode}" is authentic.`,
-    });
+    
+    const user = getCurrentUser();
+    const result = verifySerialNumber(trackingCode, user?.id);
+    
+    if (result.success) {
+      toast.success('Product Verified!', {
+        description: `${result.product?.name || 'Product'} is authentic and verified.`,
+      });
+    } else {
+      toast.error('Verification Failed', {
+        description: 'This code was not found in our system. Please check and try again.',
+      });
+    }
+    
     setTrackingCode('');
     setVerifyDialogOpen(false);
   };
