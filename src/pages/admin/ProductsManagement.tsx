@@ -85,6 +85,7 @@ export default function ProductsManagement() {
       category: product.category,
       image: product.image,
     });
+    setImagePreview(product.image || null);
     setDialogOpen(true);
   };
 
