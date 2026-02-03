@@ -207,10 +207,10 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                {/* Add to Cart Button */}
+                {/* Verify Product Button */}
                 <Button variant="hero" size="xl" className="flex-1" onClick={handleAddToCart}>
                   <ShoppingCart className="h-5 w-5 mr-2" />
-                  Add to Cart
+                  Verify Product
                 </Button>
               </div>
 
