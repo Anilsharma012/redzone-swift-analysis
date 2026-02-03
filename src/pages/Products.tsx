@@ -142,7 +142,7 @@ const Products = () => {
                     <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="p-6">
-                    <span className="text-xs text-primary font-semibold uppercase tracking-wider">{product.category}</span>
+                    <span className="text-xs text-primary font-semibold uppercase tracking-wider">{categoryLabels[product.category] || product.category}</span>
                     <h3 className="font-display text-xl text-foreground uppercase tracking-wide mt-2 mb-3">{product.name}</h3>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
                       <span>{product.servings}</span>
