@@ -332,6 +332,39 @@ const ProductDetail = () => {
         </div>
       </section>
 
+      {/* Verify Product Modal */}
+      <Dialog open={verifyDialogOpen} onOpenChange={setVerifyDialogOpen}>
+        <DialogContent className="sm:max-w-md bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl uppercase tracking-wider text-center">Verify {product.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <p className="text-sm text-muted-foreground text-center">
+              Enter the QR code or tracking number on your product packaging to verify authenticity.
+            </p>
+            <form onSubmit={handleVerifySubmit} className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Enter QR code or tracking number"
+                  value={trackingCode}
+                  onChange={(e) => setTrackingCode(e.target.value)}
+                  className="h-12 pl-10 bg-secondary border-border"
+                />
+              </div>
+              <Button type="submit" variant="hero" className="w-full" size="lg">
+                <QrCode className="h-4 w-4 mr-2" />
+                Verify Now
+              </Button>
+            </form>
+            <p className="text-xs text-muted-foreground text-center">
+              Protect yourself from counterfeit products. Only purchase from authorized retailers.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
       <ScrollToTop />
     </div>
