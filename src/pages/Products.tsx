@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { Search, Filter } from 'lucide-react';
+import { getProducts, getCategories, Product, Category } from '@/lib/store';
 import wheyImg from '@/assets/product-whey.jpg';
 import bcaaImg from '@/assets/product-bcaa.jpg';
 import massImg from '@/assets/product-mass.jpg';
@@ -14,22 +15,53 @@ import creatineImg from '@/assets/category-creatine.jpg';
 import preworkoutImg from '@/assets/category-preworkout.jpg';
 import vitaminsImg from '@/assets/category-vitamins.jpg';
 
-const allProducts = [
-  { id: '1', name: 'BPC-157 Peptide', category: 'Peptide', image: wheyImg, servings: '5mg/vial', goal: 'Recovery', highlight: 'Healing' },
-  { id: '2', name: 'Testosterone Cypionate', category: 'Injectable', image: bcaaImg, servings: '250mg/ml', goal: 'Performance', highlight: 'TRT' },
-  { id: '3', name: 'Semaglutide', category: 'Fat Loss', image: massImg, servings: '5mg/vial', goal: 'Weight Management', highlight: 'GLP-1' },
-  { id: '4', name: 'Tamoxifen Citrate', category: 'SERMs', image: omegaImg, servings: '20mg/tab', goal: 'PCT', highlight: 'Anti-E' },
-  { id: '5', name: 'TB-500 Peptide', category: 'Peptide', image: proteinImg, servings: '5mg/vial', goal: 'Recovery', highlight: 'Tissue Repair' },
-  { id: '6', name: 'Testosterone Enanthate', category: 'Injectable', image: creatineImg, servings: '250mg/ml', goal: 'Performance', highlight: 'Long Ester' },
-  { id: '7', name: 'Tirzepatide', category: 'Fat Loss', image: preworkoutImg, servings: '10mg/vial', goal: 'Weight Loss', highlight: 'GIP/GLP-1' },
-  { id: '8', name: 'Clomiphene Citrate', category: 'SERMs', image: vitaminsImg, servings: '50mg/tab', goal: 'PCT', highlight: 'Fertility' },
+// Default products with enhanced data (for display purposes)
+const defaultProducts = [
+  { id: '1', name: 'BPC-157 Peptide', category: 'peptide', image: wheyImg, servings: '5mg/vial', goal: 'Recovery', highlight: 'Healing', description: 'Healing peptide' },
+  { id: '2', name: 'Testosterone Cypionate', category: 'injectable', image: bcaaImg, servings: '250mg/ml', goal: 'Performance', highlight: 'TRT', description: 'Injectable testosterone' },
+  { id: '3', name: 'Semaglutide', category: 'fat-loss', image: massImg, servings: '5mg/vial', goal: 'Weight Management', highlight: 'GLP-1', description: 'GLP-1 for weight management' },
+  { id: '4', name: 'Tamoxifen Citrate', category: 'serms', image: omegaImg, servings: '20mg/tab', goal: 'PCT', highlight: 'Anti-E', description: 'SERM for PCT' },
+  { id: '5', name: 'TB-500 Peptide', category: 'peptide', image: proteinImg, servings: '5mg/vial', goal: 'Recovery', highlight: 'Tissue Repair', description: 'Tissue repair peptide' },
+  { id: '6', name: 'Testosterone Enanthate', category: 'injectable', image: creatineImg, servings: '250mg/ml', goal: 'Performance', highlight: 'Long Ester', description: 'Long ester testosterone' },
+  { id: '7', name: 'Tirzepatide', category: 'fat-loss', image: preworkoutImg, servings: '10mg/vial', goal: 'Weight Loss', highlight: 'GIP/GLP-1', description: 'Dual GLP-1/GIP agonist' },
+  { id: '8', name: 'Clomiphene Citrate', category: 'serms', image: vitaminsImg, servings: '50mg/tab', goal: 'PCT', highlight: 'Fertility', description: 'SERM for hormone restoration' },
 ];
 
-const categories = ['All', 'Peptide', 'Injectable', 'Fat Loss', 'SERMs'];
+const categoryLabels: Record<string, string> = {
+  peptide: 'Peptide',
+  injectable: 'Injectable',
+  'fat-loss': 'Fat Loss',
+  serms: 'SERMs',
+};
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState<(Product & { servings?: string; goal?: string; highlight?: string })[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    // Fetch products and categories from store
+    const storedProducts = getProducts();
+    const storedCategories = getCategories();
+
+    // Use stored products if available, otherwise use defaults
+    const productsToDisplay = storedProducts.length > 0
+      ? storedProducts.map(p => {
+          const defaultProduct = defaultProducts.find(dp => dp.id === p.id);
+          return {
+            ...p,
+            servings: defaultProduct?.servings || p.description,
+            goal: defaultProduct?.goal || '',
+            highlight: defaultProduct?.highlight || '',
+            image: p.image || defaultProduct?.image || wheyImg,
+          };
+        })
+      : defaultProducts;
+
+    setProducts(productsToDisplay);
+    setCategories(storedCategories);
+  }, []);
 
   const filteredProducts = allProducts.filter((product) => {
     const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
