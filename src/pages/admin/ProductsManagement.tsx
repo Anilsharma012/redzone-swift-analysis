@@ -172,13 +172,13 @@ export default function ProductsManagement() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-card border-border">
+        <DialogContent className="sm:max-w-md bg-card border-border max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="font-display text-xl uppercase tracking-wider">
               {editingProduct ? 'Edit Product' : 'Add Product'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <form onSubmit={handleSubmit} className="space-y-4 mt-4 overflow-y-auto pr-4">
             <div className="space-y-2">
               <Label htmlFor="name">Product Name</Label>
               <Input
