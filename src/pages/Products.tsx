@@ -111,7 +111,7 @@ const Products = () => {
                 <h3 className="font-display text-lg uppercase tracking-wider">Categories</h3>
               </div>
               <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
+                {categoryOptions.map((category) => (
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
