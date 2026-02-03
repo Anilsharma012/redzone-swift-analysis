@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -8,7 +8,7 @@ import { ShoppingCart, Minus, Plus, Check, ChevronLeft, Search, QrCode } from 'l
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { verifySerialNumber, getCurrentUser } from '@/lib/store';
+import { verifySerialNumber, getCurrentUser, getProducts } from '@/lib/store';
 import wheyImg from '@/assets/product-whey.jpg';
 import bcaaImg from '@/assets/product-bcaa.jpg';
 import massImg from '@/assets/product-mass.jpg';
