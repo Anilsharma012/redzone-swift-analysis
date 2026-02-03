@@ -235,8 +235,8 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Verify Product Button */}
-                <Button variant="hero" size="xl" className="flex-1" onClick={handleAddToCart}>
-                  <ShoppingCart className="h-5 w-5 mr-2" />
+                <Button variant="hero" size="xl" className="flex-1" onClick={handleVerifyProduct}>
+                  <QrCode className="h-5 w-5 mr-2" />
                   Verify Product
                 </Button>
               </div>
