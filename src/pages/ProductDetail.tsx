@@ -117,14 +117,23 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [verifyDialogOpen, setVerifyDialogOpen] = useState(false);
   const [trackingCode, setTrackingCode] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const product = allProducts.find((p) => p.id === id) || allProducts[0];
-  const relatedProducts = allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
+  useEffect(() => {
+    // Fetch products from store
+    const storeProducts = getProducts();
+    setProducts(storeProducts.length > 0 ? storeProducts : allProducts);
+    setIsLoading(false);
+  }, []);
+
+  const product = products.find((p) => p.id === id) || products[0] || allProducts[0];
+  const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   // If not enough in same category, fill with other products
   const displayRelated = relatedProducts.length >= 3
     ? relatedProducts
-    : [...relatedProducts, ...allProducts.filter((p) => p.id !== product.id && !relatedProducts.includes(p))].slice(0, 3);
+    : [...relatedProducts, ...products.filter((p) => p.id !== product.id && !relatedProducts.includes(p))].slice(0, 3);
 
   const handleVerifyProduct = () => {
     setVerifyDialogOpen(true);
