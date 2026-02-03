@@ -213,15 +213,68 @@ export default function ProductsManagement() {
                 rows={3}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                value={form.image}
-                onChange={(e) => setForm({ ...form, image: e.target.value })}
-                placeholder="/placeholder.svg"
-                className="bg-secondary border-border"
-              />
+            {/* Image Section */}
+            <div className="space-y-3">
+              <Label>Product Image</Label>
+
+              {/* Image Preview */}
+              {imagePreview && (
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-secondary border border-border">
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForm({ ...form, image: '' });
+                      setImagePreview(null);
+                    }}
+                    className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-lg hover:bg-destructive/80 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* File Upload */}
+              <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer hover:bg-primary/5 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-2 pb-2">
+                  <Upload className="h-8 w-8 text-primary mb-2" />
+                  <p className="text-sm font-medium text-foreground">Click to upload or drag & drop</p>
+                  <p className="text-xs text-muted-foreground">PNG, JPG, GIF (Max 5MB)</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
+
+              {/* OR Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border/50" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="px-2 bg-card text-muted-foreground">OR</span>
+                </div>
+              </div>
+
+              {/* Image URL Input */}
+              <div className="space-y-2">
+                <Label htmlFor="image" className="text-xs">Image URL</Label>
+                <Input
+                  id="image"
+                  value={form.image}
+                  onChange={(e) => {
+                    setForm({ ...form, image: e.target.value });
+                    if (!imagePreview && e.target.value) {
+                      setImagePreview(e.target.value);
+                    }
+                  }}
+                  placeholder="https://example.com/image.jpg"
+                  className="bg-secondary border-border text-xs"
+                />
+              </div>
             </div>
             <div className="flex gap-3 pt-4">
               <Button type="button" variant="outline" className="flex-1" onClick={() => setDialogOpen(false)}>
