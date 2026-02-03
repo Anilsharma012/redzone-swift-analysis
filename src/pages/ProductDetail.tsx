@@ -115,19 +115,43 @@ const allProducts = [
 const ProductDetail = () => {
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
+  const [verifyDialogOpen, setVerifyDialogOpen] = useState(false);
+  const [trackingCode, setTrackingCode] = useState('');
 
   const product = allProducts.find((p) => p.id === id) || allProducts[0];
   const relatedProducts = allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   // If not enough in same category, fill with other products
-  const displayRelated = relatedProducts.length >= 3 
-    ? relatedProducts 
+  const displayRelated = relatedProducts.length >= 3
+    ? relatedProducts
     : [...relatedProducts, ...allProducts.filter((p) => p.id !== product.id && !relatedProducts.includes(p))].slice(0, 3);
 
-  const handleAddToCart = () => {
-    toast.success(`Added ${quantity}x ${product.name} to cart!`, {
-      description: 'Item added successfully',
-    });
+  const handleVerifyProduct = () => {
+    setVerifyDialogOpen(true);
+  };
+
+  const handleVerifySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trackingCode.trim()) {
+      toast.error('Please enter a QR code or tracking number');
+      return;
+    }
+
+    const user = getCurrentUser();
+    const result = verifySerialNumber(trackingCode, user?.id);
+
+    if (result.success) {
+      toast.success('Product Verified!', {
+        description: `${result.product?.name || 'Product'} is authentic and verified.`,
+      });
+    } else {
+      toast.error('Verification Failed', {
+        description: 'This code was not found in our system. Please check and try again.',
+      });
+    }
+
+    setTrackingCode('');
+    setVerifyDialogOpen(false);
   };
 
   return (
