@@ -99,6 +99,7 @@ export default function ProductsManagement() {
   const openAddDialog = () => {
     setEditingProduct(null);
     setForm({ name: '', description: '', category: '', image: '' });
+    setImagePreview(null);
     setDialogOpen(true);
   };
 
