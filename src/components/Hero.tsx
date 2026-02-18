@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-gym.jpg';
-import logoImg from '@/assets/logo-hugelabz.png';
+import logoImg from '@/assets/logo-hugepharma.png';
 
 export function Hero() {
   return (
@@ -24,7 +24,7 @@ export function Hero() {
           <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <img 
               src={logoImg} 
-              alt="HugeLabs Health Supplement" 
+              alt="Huge Pharma" 
               className="h-32 md:h-40 w-auto mx-auto animate-pulse-glow"
             />
           </div>

@@ -4,7 +4,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, QrCode } from 'lucide-react';
 import wheyImg from '@/assets/product-whey.jpg';
 import bcaaImg from '@/assets/product-bcaa.jpg';
 import massImg from '@/assets/product-mass.jpg';
@@ -95,29 +95,37 @@ const Products = () => {
           <div className="flex-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredProducts.map((product, index) => (
-                <Link
+                <div
                   key={product.id}
-                  to={`/product/${product.id}`}
-                  className="group gradient-card rounded-2xl overflow-hidden card-lift border border-border opacity-0 animate-fade-in-up block"
+                  className="group gradient-card rounded-2xl overflow-hidden card-lift border border-border opacity-0 animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.05}s`, animationFillMode: 'forwards' }}
                 >
-                  <div className="aspect-square overflow-hidden img-zoom">
-                    <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                  </div>
+                  <Link to={`/product/${product.id}`}>
+                    <div className="aspect-square overflow-hidden img-zoom">
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                    </div>
+                  </Link>
                   <div className="p-6">
                     <span className="text-xs text-primary font-semibold uppercase tracking-wider">{product.category}</span>
-                    <h3 className="font-display text-xl text-foreground uppercase tracking-wide mt-2 mb-3">{product.name}</h3>
+                    <Link to={`/product/${product.id}`}>
+                      <h3 className="font-display text-xl text-foreground uppercase tracking-wide mt-2 mb-3 hover:text-primary transition-colors">{product.name}</h3>
+                    </Link>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
                       <span>{product.servings}</span>
                       <span className="w-1 h-1 bg-muted-foreground rounded-full" />
                       <span>{product.goal}</span>
                     </div>
                     <div className="text-sm text-primary font-semibold mb-4">{product.highlight}</div>
-                    <Button variant="default" size="sm" asChild>
-                      <span>View Details</span>
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="hero" size="sm" className="flex-1" asChild>
+                        <Link to={`/product/${product.id}`}>
+                          <QrCode className="h-4 w-4 mr-1" />
+                          Verify Product
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
 

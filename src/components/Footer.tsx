@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-import logoImg from '@/assets/logo-hugelabz.png';
+import logoImg from '@/assets/logo-hugepharma.png';
 
 const footerLinks = {
   brand: {
-    title: 'HUGELABS',
+    title: 'HUGE PHARMA',
     links: [
       { name: 'Our Story', href: '/about' },
       { name: 'Quality Promise', href: '/about#quality' },
@@ -57,7 +57,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-6">
-              <img src={logoImg} alt="HugeLabs Health Supplement" className="h-16 w-auto" />
+              <img src={logoImg} alt="Huge Pharma" className="h-16 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground mb-6">
               Premium health supplements for athletes who demand the best. Fuel your potential.
@@ -69,9 +69,9 @@ export function Footer() {
                 <Mail className="h-4 w-4" />
                 info@hugelabz.com
               </a>
-              <a href="tel:+923001234567" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="tel:+917988683483" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Phone className="h-4 w-4" />
-                +92 300 1234567
+                +91 7988683483
               </a>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
@@ -126,7 +126,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} HUGELABS HEALTH SUPPLEMENT. All rights reserved.
+            © {new Date().getFullYear()} HUGE PHARMA. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <Link to="/privacy" className="hover:text-foreground transition-colors">

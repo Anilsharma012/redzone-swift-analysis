@@ -55,8 +55,8 @@ const Contact = () => {
           {/* Contact Info */}
           <div className="lg:col-span-1 space-y-6">
             {[
-            { icon: Mail, title: 'Email Us', content: 'info@hugelabz.com', href: 'mailto:info@hugelabz.com' },
-              { icon: Phone, title: 'Call Us', content: '+92 300 1234567', href: 'tel:+923001234567' },
+              { icon: Mail, title: 'Email Us', content: 'info@hugelabz.com', href: 'mailto:info@hugelabz.com' },
+              { icon: Phone, title: 'Call Us', content: '+91 7988683483', href: 'tel:+917988683483' },
               { icon: MapPin, title: 'Visit Us', content: 'Lahore, Pakistan', href: '#' },
               { icon: Clock, title: 'Business Hours', content: 'Mon-Sat: 10AM-8PM PKT', href: '#' },
             ].map((item, index) => (
