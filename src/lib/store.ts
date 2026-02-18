@@ -39,6 +39,14 @@ const STORAGE_KEYS = {
   CURRENT_USER: 'hugelabz_current_user',
 };
 
+export interface VerificationRecord {
+  _id: string;
+  serialCode: string;
+  productId: string | Product;
+  userId: string | User;
+  verifiedAt: string;
+}
+
 // --- Products ---
 export async function getProducts(): Promise<Product[]> {
   const response = await fetch('/api/products');
@@ -144,6 +152,19 @@ export async function verifySerialNumber(code: string, userId?: string): Promise
     body: JSON.stringify({ code, userId }),
   });
   if (!response.ok) return { success: false };
+  return response.json();
+}
+
+// --- Verifications ---
+export async function getVerifications(): Promise<VerificationRecord[]> {
+  const response = await fetch('/api/verifications');
+  if (!response.ok) throw new Error('Failed to fetch verifications');
+  return response.json();
+}
+
+export async function getUserVerifications(userId: string): Promise<VerificationRecord[]> {
+  const response = await fetch(`/api/verifications/user/${userId}`);
+  if (!response.ok) throw new Error('Failed to fetch user verifications');
   return response.json();
 }
 

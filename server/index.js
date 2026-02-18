@@ -6,6 +6,7 @@ import Product from './models/Product.js';
 import Category from './models/Category.js';
 import User from './models/User.js';
 import Serial from './models/Serial.js';
+import Verification from './models/Verification.js';
 
 dotenv.config();
 
@@ -155,9 +156,15 @@ app.post('/api/serials/verify', async (req, res) => {
     
     serial.isVerified = true;
     serial.verifiedAt = new Date();
-    if (userId) serial.verifiedBy = userId;
-    await serial.save();
-    
+    if (userId) {
+      const newVerification = new Verification({
+        serialCode: code,
+        productId: serial.productId._id,
+        userId
+      });
+      await newVerification.save();
+    }
+
     res.json({ success: true, serial, product: serial.productId });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -168,6 +175,25 @@ app.delete('/api/serials/:id', async (req, res) => {
   try {
     await Serial.findByIdAndDelete(req.params.id);
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Verifications
+app.get('/api/verifications', async (req, res) => {
+  try {
+    const verifications = await Verification.find().populate('productId').populate('userId');
+    res.json(verifications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/verifications/user/:userId', async (req, res) => {
+  try {
+    const verifications = await Verification.find({ userId: req.params.userId }).populate('productId');
+    res.json(verifications);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

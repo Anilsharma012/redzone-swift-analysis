@@ -37,13 +37,13 @@ const Auth = () => {
     }
   }, [navigate, redirect]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
+    try {
       if (isLogin) {
-        const user = loginUser(formData.email, formData.password);
+        const user = await loginUser(formData.email, formData.password);
         if (user) {
           toast.success(`Welcome back, ${user.name}!`);
           if (user.role === 'admin') {
@@ -65,17 +65,20 @@ const Auth = () => {
           setLoading(false);
           return;
         }
-        const user = registerUser(formData.email, formData.password, formData.name);
+        const user = await registerUser(formData.email, formData.password, formData.name);
         if (user) {
-          loginUser(formData.email, formData.password);
+          await loginUser(formData.email, formData.password);
           toast.success('Account created successfully!');
           navigate(redirect);
         } else {
           toast.error('This email is already registered');
         }
       }
+    } catch (error) {
+      toast.error('Authentication error. Please try again later.');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   return (

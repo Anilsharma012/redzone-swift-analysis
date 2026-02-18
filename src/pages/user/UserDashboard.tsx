@@ -29,11 +29,23 @@ export default function UserDashboard() {
       navigate('/auth?redirect=/dashboard');
       return;
     }
-    setVerifications(getUserVerifications(user.id));
-    setProducts(getProducts());
+    
+    const fetchData = async () => {
+      try {
+        const [v, p] = await Promise.all([
+          getUserVerifications(user._id),
+          getProducts()
+        ]);
+        setVerifications(v);
+        setProducts(p);
+      } catch (error) {
+        toast.error('Failed to load dashboard data');
+      }
+    };
+    fetchData();
   }, [user, navigate]);
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchCode.trim()) {
       toast.error('Please enter a serial code');
@@ -42,24 +54,26 @@ export default function UserDashboard() {
 
     setVerifying(true);
     
-    // Simulate verification delay
-    setTimeout(() => {
-      const result = verifySerialNumber(searchCode, user?.id);
+    try {
+      const result = await verifySerialNumber(searchCode, user?._id);
       
       if (result.success) {
         toast.success('Product Verified!', {
           description: `${result.product?.name || 'Product'} is authentic.`,
         });
-        setVerifications(getUserVerifications(user!.id));
+        const updatedVerifications = await getUserVerifications(user!._id);
+        setVerifications(updatedVerifications);
       } else {
         toast.error('Verification Failed', {
           description: 'This serial code was not found in our system.',
         });
       }
-      
+    } catch (error) {
+      toast.error('Verification failed due to a server error');
+    } finally {
       setSearchCode('');
       setVerifying(false);
-    }, 1000);
+    }
   };
 
   const handleLogout = () => {
@@ -155,9 +169,10 @@ export default function UserDashboard() {
             ) : (
               <div className="grid gap-4">
                 {verifications.map((v) => {
-                  const product = products.find(p => p.id === v.productId);
+                  const productId = typeof v.productId === 'string' ? v.productId : v.productId?._id;
+                  const product = products.find(p => p._id === productId);
                   return (
-                    <div key={v.id} className="flex items-center justify-between p-4 bg-secondary rounded-xl">
+                    <div key={v._id} className="flex items-center justify-between p-4 bg-secondary rounded-xl">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
                           <CheckCircle className="h-6 w-6 text-green-500" />
