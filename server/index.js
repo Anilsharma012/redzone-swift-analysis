@@ -19,6 +19,10 @@ app.use(express.json());
 // Replace <db_username> with actual username from env or use provided URI
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/hugelabz';
 
+console.log('Attempting to connect to MongoDB...');
+const maskedURI = MONGODB_URI.replace(/\/\/(.*):(.*)@/, '//***:***@');
+console.log('URI:', maskedURI);
+
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
