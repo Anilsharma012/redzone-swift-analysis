@@ -1,7 +1,7 @@
-// LocalStorage-based store for products, categories, users, and serial numbers
+// MongoDB-based store using API endpoints
 
 export interface Product {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   category: string;
@@ -10,16 +10,16 @@ export interface Product {
 }
 
 export interface Category {
-  id: string;
+  _id: string;
   name: string;
   slug: string;
   image: string;
 }
 
 export interface SerialNumber {
-  id: string;
+  _id: string;
   code: string;
-  productId: string;
+  productId: string | Product;
   isVerified: boolean;
   verifiedAt?: string;
   verifiedBy?: string;
@@ -27,229 +27,168 @@ export interface SerialNumber {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   email: string;
-  password: string;
+  password?: string;
   name: string;
   role: 'admin' | 'user';
   createdAt: string;
 }
 
-export interface VerificationRecord {
-  id: string;
-  serialCode: string;
-  productId: string;
-  userId: string;
-  verifiedAt: string;
-}
-
 const STORAGE_KEYS = {
-  PRODUCTS: 'hugelabz_products',
-  CATEGORIES: 'hugelabz_categories',
-  SERIAL_NUMBERS: 'hugelabz_serials',
-  USERS: 'hugelabz_users',
-  VERIFICATIONS: 'hugelabz_verifications',
   CURRENT_USER: 'hugelabz_current_user',
 };
 
-// Default categories
-const defaultCategories: Category[] = [
-  { id: '1', name: 'Peptide', slug: 'peptide', image: '/placeholder.svg' },
-  { id: '2', name: 'Injectable', slug: 'injectable', image: '/placeholder.svg' },
-  { id: '3', name: 'Anti Obesity / Fat Loss', slug: 'fat-loss', image: '/placeholder.svg' },
-  { id: '4', name: 'SERMs', slug: 'serms', image: '/placeholder.svg' },
-];
-
-// Default products
-const defaultProducts: Product[] = [
-  { id: '1', name: 'BPC-157', description: 'Peptide for recovery', category: 'peptide', image: '/placeholder.svg', createdAt: new Date().toISOString() },
-  { id: '2', name: 'TB-500', description: 'Healing peptide', category: 'peptide', image: '/placeholder.svg', createdAt: new Date().toISOString() },
-  { id: '3', name: 'Test-E 250', description: 'Injectable testosterone', category: 'injectable', image: '/placeholder.svg', createdAt: new Date().toISOString() },
-  { id: '4', name: 'Semaglutide', description: 'GLP-1 for weight management', category: 'fat-loss', image: '/placeholder.svg', createdAt: new Date().toISOString() },
-];
-
-// Default admin user
-const defaultUsers: User[] = [
-  { id: 'admin1', email: 'admin@hugelabz.com', password: 'admin123', name: 'Admin', role: 'admin', createdAt: new Date().toISOString() },
-];
-
-// Initialize store with defaults
-function initializeStore() {
-  if (!localStorage.getItem(STORAGE_KEYS.CATEGORIES)) {
-    localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(defaultCategories));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
-    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(defaultProducts));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(defaultUsers));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.SERIAL_NUMBERS)) {
-    localStorage.setItem(STORAGE_KEYS.SERIAL_NUMBERS, JSON.stringify([]));
-  }
-  if (!localStorage.getItem(STORAGE_KEYS.VERIFICATIONS)) {
-    localStorage.setItem(STORAGE_KEYS.VERIFICATIONS, JSON.stringify([]));
-  }
+export interface VerificationRecord {
+  _id: string;
+  serialCode: string;
+  productId: string | Product;
+  userId: string | User;
+  verifiedAt: string;
 }
 
-// Products
-export function getProducts(): Product[] {
-  initializeStore();
-  return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+// --- Products ---
+export async function getProducts(): Promise<Product[]> {
+  const response = await fetch('/api/products');
+  if (!response.ok) throw new Error('Failed to fetch products');
+  return response.json();
 }
 
-export function addProduct(product: Omit<Product, 'id' | 'createdAt'>): Product {
-  const products = getProducts();
-  const newProduct: Product = {
-    ...product,
-    id: Date.now().toString(),
-    createdAt: new Date().toISOString(),
-  };
-  products.push(newProduct);
-  localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
-  return newProduct;
+export async function addProduct(product: Omit<Product, '_id' | 'createdAt'>): Promise<Product> {
+  const response = await fetch('/api/products', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(product),
+  });
+  if (!response.ok) throw new Error('Failed to add product');
+  return response.json();
 }
 
-export function updateProduct(id: string, updates: Partial<Product>): Product | null {
-  const products = getProducts();
-  const index = products.findIndex(p => p.id === id);
-  if (index === -1) return null;
-  products[index] = { ...products[index], ...updates };
-  localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
-  return products[index];
+export async function updateProduct(id: string, updates: Partial<Product>): Promise<Product> {
+  const response = await fetch(`/api/products/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates),
+  });
+  if (!response.ok) throw new Error('Failed to update product');
+  return response.json();
 }
 
-export function deleteProduct(id: string): boolean {
-  const products = getProducts();
-  const filtered = products.filter(p => p.id !== id);
-  localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(filtered));
-  return filtered.length < products.length;
+export async function deleteProduct(id: string): Promise<boolean> {
+  const response = await fetch(`/api/products/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) throw new Error('Failed to delete product');
+  const result = await response.json();
+  return result.success;
 }
 
-// Categories
-export function getCategories(): Category[] {
-  initializeStore();
-  return JSON.parse(localStorage.getItem(STORAGE_KEYS.CATEGORIES) || '[]');
+// --- Categories ---
+export async function getCategories(): Promise<Category[]> {
+  const response = await fetch('/api/categories');
+  if (!response.ok) throw new Error('Failed to fetch categories');
+  return response.json();
 }
 
-export function addCategory(category: Omit<Category, 'id'>): Category {
-  const categories = getCategories();
-  const newCategory: Category = {
-    ...category,
-    id: Date.now().toString(),
-  };
-  categories.push(newCategory);
-  localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-  return newCategory;
+export async function addCategory(category: Omit<Category, '_id'>): Promise<Category> {
+  const response = await fetch('/api/categories', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(category),
+  });
+  if (!response.ok) throw new Error('Failed to add category');
+  return response.json();
 }
 
-export function updateCategory(id: string, updates: Partial<Category>): Category | null {
-  const categories = getCategories();
-  const index = categories.findIndex(c => c.id === id);
-  if (index === -1) return null;
-  categories[index] = { ...categories[index], ...updates };
-  localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-  return categories[index];
+export async function updateCategory(id: string, updates: Partial<Category>): Promise<Category> {
+  const response = await fetch(`/api/categories/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates),
+  });
+  if (!response.ok) throw new Error('Failed to update category');
+  return response.json();
 }
 
-export function deleteCategory(id: string): boolean {
-  const categories = getCategories();
-  const filtered = categories.filter(c => c.id !== id);
-  localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(filtered));
-  return filtered.length < categories.length;
+export async function deleteCategory(id: string): Promise<boolean> {
+  const response = await fetch(`/api/categories/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) throw new Error('Failed to delete category');
+  const result = await response.json();
+  return result.success;
 }
 
-// Serial Numbers
-export function getSerialNumbers(): SerialNumber[] {
-  initializeStore();
-  return JSON.parse(localStorage.getItem(STORAGE_KEYS.SERIAL_NUMBERS) || '[]');
+// --- Serial Numbers ---
+export async function getSerialNumbers(): Promise<SerialNumber[]> {
+  const response = await fetch('/api/serials');
+  if (!response.ok) throw new Error('Failed to fetch serials');
+  return response.json();
 }
 
-export function addSerialNumber(serial: Omit<SerialNumber, 'id' | 'createdAt' | 'isVerified'>): SerialNumber {
-  const serials = getSerialNumbers();
-  const newSerial: SerialNumber = {
-    ...serial,
-    id: Date.now().toString(),
-    isVerified: false,
-    createdAt: new Date().toISOString(),
-  };
-  serials.push(newSerial);
-  localStorage.setItem(STORAGE_KEYS.SERIAL_NUMBERS, JSON.stringify(serials));
-  return newSerial;
+export async function addSerialNumber(serial: Omit<SerialNumber, '_id' | 'createdAt' | 'isVerified'>): Promise<SerialNumber> {
+  const response = await fetch('/api/serials', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(serial),
+  });
+  if (!response.ok) throw new Error('Failed to add serial');
+  return response.json();
 }
 
-export function verifySerialNumber(code: string, userId?: string): { success: boolean; serial?: SerialNumber; product?: Product } {
-  const serials = getSerialNumbers();
-  const serial = serials.find(s => s.code.toLowerCase() === code.toLowerCase());
-  
-  if (!serial) {
-    return { success: false };
-  }
-  
-  const products = getProducts();
-  const product = products.find(p => p.id === serial.productId);
-  
-  // Mark as verified
-  serial.isVerified = true;
-  serial.verifiedAt = new Date().toISOString();
-  serial.verifiedBy = userId;
-  localStorage.setItem(STORAGE_KEYS.SERIAL_NUMBERS, JSON.stringify(serials));
-  
-  // Add verification record
-  if (userId) {
-    const verifications = getVerifications();
-    verifications.push({
-      id: Date.now().toString(),
-      serialCode: code,
-      productId: serial.productId,
-      userId,
-      verifiedAt: new Date().toISOString(),
-    });
-    localStorage.setItem(STORAGE_KEYS.VERIFICATIONS, JSON.stringify(verifications));
-  }
-  
-  return { success: true, serial, product };
+export async function deleteSerialNumber(id: string): Promise<boolean> {
+  const response = await fetch(`/api/serials/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) throw new Error('Failed to delete serial');
+  const result = await response.json();
+  return result.success;
 }
 
-export function deleteSerialNumber(id: string): boolean {
-  const serials = getSerialNumbers();
-  const filtered = serials.filter(s => s.id !== id);
-  localStorage.setItem(STORAGE_KEYS.SERIAL_NUMBERS, JSON.stringify(filtered));
-  return filtered.length < serials.length;
+export async function verifySerialNumber(code: string, userId?: string): Promise<{ success: boolean; serial?: SerialNumber; product?: Product }> {
+  const response = await fetch('/api/serials/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, userId }),
+  });
+  if (!response.ok) return { success: false };
+  return response.json();
 }
 
-// Users
-export function getUsers(): User[] {
-  initializeStore();
-  return JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+// --- Verifications ---
+export async function getVerifications(): Promise<VerificationRecord[]> {
+  const response = await fetch('/api/verifications');
+  if (!response.ok) throw new Error('Failed to fetch verifications');
+  return response.json();
 }
 
-export function registerUser(email: string, password: string, name: string): User | null {
-  const users = getUsers();
-  if (users.find(u => u.email === email)) {
-    return null; // User already exists
-  }
-  const newUser: User = {
-    id: Date.now().toString(),
-    email,
-    password,
-    name,
-    role: 'user',
-    createdAt: new Date().toISOString(),
-  };
-  users.push(newUser);
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-  return newUser;
+export async function getUserVerifications(userId: string): Promise<VerificationRecord[]> {
+  const response = await fetch(`/api/verifications/user/${userId}`);
+  if (!response.ok) throw new Error('Failed to fetch user verifications');
+  return response.json();
 }
 
-export function loginUser(email: string, password: string): User | null {
-  const users = getUsers();
-  const user = users.find(u => u.email === email && u.password === password);
-  if (user) {
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
-    return user;
-  }
-  return null;
+// --- Auth ---
+export async function registerUser(email: string, password: string, name: string): Promise<User | null> {
+  const response = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, name }),
+  });
+  if (!response.ok) return null;
+  return response.json();
+}
+
+export async function loginUser(email: string, password: string): Promise<User | null> {
+  const response = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!response.ok) return null;
+  const user = await response.json();
+  localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+  return user;
 }
 
 export function getCurrentUser(): User | null {
@@ -259,15 +198,4 @@ export function getCurrentUser(): User | null {
 
 export function logoutUser(): void {
   localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-}
-
-// Verifications
-export function getVerifications(): VerificationRecord[] {
-  initializeStore();
-  return JSON.parse(localStorage.getItem(STORAGE_KEYS.VERIFICATIONS) || '[]');
-}
-
-export function getUserVerifications(userId: string): VerificationRecord[] {
-  const verifications = getVerifications();
-  return verifications.filter(v => v.userId === userId);
 }

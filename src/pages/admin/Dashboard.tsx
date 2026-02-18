@@ -1,11 +1,36 @@
+import { useState, useEffect } from 'react';
 import { Package, FolderTree, QrCode, CheckCircle } from 'lucide-react';
-import { getProducts, getCategories, getSerialNumbers, getVerifications } from '@/lib/store';
+import { getProducts, getCategories, getSerialNumbers, getVerifications, Product, Category, SerialNumber, VerificationRecord } from '@/lib/store';
+import { toast } from 'sonner';
 
 export default function Dashboard() {
-  const products = getProducts();
-  const categories = getCategories();
-  const serials = getSerialNumbers();
-  const verifications = getVerifications();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [serials, setSerials] = useState<SerialNumber[]>([]);
+  const [verifications, setVerifications] = useState<VerificationRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [p, c, s, v] = await Promise.all([
+          getProducts(),
+          getCategories(),
+          getSerialNumbers(),
+          getVerifications()
+        ]);
+        setProducts(p);
+        setCategories(c);
+        setSerials(s);
+        setVerifications(v);
+      } catch (error) {
+        toast.error('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const stats = [
     { name: 'Total Products', value: products.length, icon: Package, color: 'text-blue-500' },
@@ -15,6 +40,10 @@ export default function Dashboard() {
   ];
 
   const recentVerifications = verifications.slice(-5).reverse();
+
+  if (loading) {
+    return <div className="p-8 text-center text-muted-foreground">Loading dashboard...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -48,9 +77,10 @@ export default function Dashboard() {
         ) : (
           <div className="space-y-4">
             {recentVerifications.map((v) => {
-              const product = products.find(p => p.id === v.productId);
+              const productId = typeof v.productId === 'string' ? v.productId : v.productId?._id;
+              const product = products.find(p => p._id === productId);
               return (
-                <div key={v.id} className="flex items-center justify-between p-4 bg-secondary rounded-xl">
+                <div key={v._id} className="flex items-center justify-between p-4 bg-secondary rounded-xl">
                   <div>
                     <p className="font-medium text-foreground">{product?.name || 'Unknown Product'}</p>
                     <p className="text-sm text-muted-foreground">Code: {v.serialCode}</p>

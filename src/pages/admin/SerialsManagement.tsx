@@ -25,11 +25,22 @@ export default function SerialsManagement() {
   const [bulkProductId, setBulkProductId] = useState('');
 
   useEffect(() => {
-    setSerials(getSerialNumbers());
-    setProducts(getProducts());
+    const fetchData = async () => {
+      try {
+        const [serialsData, productsData] = await Promise.all([
+          getSerialNumbers(),
+          getProducts()
+        ]);
+        setSerials(serialsData);
+        setProducts(productsData);
+      } catch (error) {
+        toast.error('Failed to load data');
+      }
+    };
+    fetchData();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.code || !form.productId) {
       toast.error('Code and product are required');
@@ -42,15 +53,20 @@ export default function SerialsManagement() {
       return;
     }
 
-    addSerialNumber({ code: form.code, productId: form.productId });
-    toast.success('Serial number added successfully');
+    try {
+      await addSerialNumber({ code: form.code, productId: form.productId });
+      toast.success('Serial number added successfully');
 
-    setSerials(getSerialNumbers());
-    setDialogOpen(false);
-    setForm({ code: '', productId: '' });
+      const updatedSerials = await getSerialNumbers();
+      setSerials(updatedSerials);
+      setDialogOpen(false);
+      setForm({ code: '', productId: '' });
+    } catch (error) {
+      toast.error('Failed to add serial number');
+    }
   };
 
-  const handleBulkSubmit = (e: React.FormEvent) => {
+  const handleBulkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!bulkCodes.trim() || !bulkProductId) {
       toast.error('Codes and product are required');
@@ -61,27 +77,37 @@ export default function SerialsManagement() {
     let added = 0;
     let skipped = 0;
 
-    codes.forEach(code => {
-      if (serials.find(s => s.code.toLowerCase() === code.toLowerCase())) {
-        skipped++;
-      } else {
-        addSerialNumber({ code, productId: bulkProductId });
-        added++;
+    try {
+      for (const code of codes) {
+        if (serials.find(s => s.code.toLowerCase() === code.toLowerCase())) {
+          skipped++;
+        } else {
+          await addSerialNumber({ code, productId: bulkProductId });
+          added++;
+        }
       }
-    });
 
-    toast.success(`Added ${added} serial numbers${skipped > 0 ? `, skipped ${skipped} duplicates` : ''}`);
-    setSerials(getSerialNumbers());
-    setBulkDialogOpen(false);
-    setBulkCodes('');
-    setBulkProductId('');
+      toast.success(`Added ${added} serial numbers${skipped > 0 ? `, skipped ${skipped} duplicates` : ''}`);
+      const updatedSerials = await getSerialNumbers();
+      setSerials(updatedSerials);
+      setBulkDialogOpen(false);
+      setBulkCodes('');
+      setBulkProductId('');
+    } catch (error) {
+      toast.error('Bulk upload failed partly');
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this serial number?')) {
-      deleteSerialNumber(id);
-      setSerials(getSerialNumbers());
-      toast.success('Serial number deleted successfully');
+      try {
+        await deleteSerialNumber(id);
+        const updatedSerials = await getSerialNumbers();
+        setSerials(updatedSerials);
+        toast.success('Serial number deleted successfully');
+      } catch (error) {
+        toast.error('Delete failed');
+      }
     }
   };
 
@@ -135,9 +161,9 @@ export default function SerialsManagement() {
                 </tr>
               ) : (
                 serials.map((serial) => {
-                  const product = products.find(p => p.id === serial.productId);
+                  const product = products.find(p => p._id === (typeof serial.productId === 'string' ? serial.productId : serial.productId?._id));
                   return (
-                    <tr key={serial.id} className="border-b border-border hover:bg-secondary/30 transition-colors">
+                    <tr key={serial._id} className="border-b border-border hover:bg-secondary/30 transition-colors">
                       <td className="p-4">
                         <code className="text-sm font-mono bg-secondary px-2 py-1 rounded text-foreground">
                           {serial.code}
@@ -162,11 +188,11 @@ export default function SerialsManagement() {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center justify-end gap-2">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="text-destructive" 
-                            onClick={() => handleDelete(serial.id)}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive"
+                            onClick={() => handleDelete(serial._id)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -213,7 +239,7 @@ export default function SerialsManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id}>{product.name}</SelectItem>
+                    <SelectItem key={product._id} value={product._id}>{product.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -247,7 +273,7 @@ export default function SerialsManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id}>{product.name}</SelectItem>
+                    <SelectItem key={product._id} value={product._id}>{product.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
