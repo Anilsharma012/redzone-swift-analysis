@@ -25,29 +25,45 @@ export default function ProductsManagement() {
   const [form, setForm] = useState({ name: '', description: '', category: '', image: '' });
 
   useEffect(() => {
-    setProducts(getProducts());
-    setCategories(getCategories());
+    const fetchData = async () => {
+      try {
+        const [productsData, categoriesData] = await Promise.all([
+          getProducts(),
+          getCategories()
+        ]);
+        setProducts(productsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        toast.error('Failed to load products');
+      }
+    };
+    fetchData();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.category) {
       toast.error('Name and category are required');
       return;
     }
 
-    if (editingProduct) {
-      updateProduct(editingProduct.id, form);
-      toast.success('Product updated successfully');
-    } else {
-      addProduct(form);
-      toast.success('Product added successfully');
-    }
+    try {
+      if (editingProduct) {
+        await updateProduct(editingProduct._id, form);
+        toast.success('Product updated successfully');
+      } else {
+        await addProduct(form);
+        toast.success('Product added successfully');
+      }
 
-    setProducts(getProducts());
-    setDialogOpen(false);
-    setEditingProduct(null);
-    setForm({ name: '', description: '', category: '', image: '' });
+      const updatedProducts = await getProducts();
+      setProducts(updatedProducts);
+      setDialogOpen(false);
+      setEditingProduct(null);
+      setForm({ name: '', description: '', category: '', image: '' });
+    } catch (error) {
+      toast.error('Operation failed');
+    }
   };
 
   const handleEdit = (product: Product) => {
@@ -61,11 +77,16 @@ export default function ProductsManagement() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      deleteProduct(id);
-      setProducts(getProducts());
-      toast.success('Product deleted successfully');
+      try {
+        await deleteProduct(id);
+        const updatedProducts = await getProducts();
+        setProducts(updatedProducts);
+        toast.success('Product deleted successfully');
+      } catch (error) {
+        toast.error('Delete failed');
+      }
     }
   };
 
@@ -111,7 +132,7 @@ export default function ProductsManagement() {
                 products.map((product) => {
                   const category = categories.find(c => c.slug === product.category);
                   return (
-                    <tr key={product.id} className="border-b border-border hover:bg-secondary/30 transition-colors">
+                    <tr key={product._id} className="border-b border-border hover:bg-secondary/30 transition-colors">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
@@ -127,7 +148,7 @@ export default function ProductsManagement() {
                           <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(product.id)}>
+                          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(product._id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -168,7 +189,7 @@ export default function ProductsManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.slug}>{cat.name}</SelectItem>
+                    <SelectItem key={cat._id} value={cat.slug}>{cat.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

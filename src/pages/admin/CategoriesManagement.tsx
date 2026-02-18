@@ -20,28 +20,41 @@ export default function CategoriesManagement() {
   const [form, setForm] = useState({ name: '', slug: '', image: '' });
 
   useEffect(() => {
-    setCategories(getCategories());
+    const fetchData = async () => {
+      try {
+        const categoriesData = await getCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        toast.error('Failed to load categories');
+      }
+    };
+    fetchData();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.slug) {
       toast.error('Name and slug are required');
       return;
     }
 
-    if (editingCategory) {
-      updateCategory(editingCategory.id, form);
-      toast.success('Category updated successfully');
-    } else {
-      addCategory(form);
-      toast.success('Category added successfully');
-    }
+    try {
+      if (editingCategory) {
+        await updateCategory(editingCategory._id, form);
+        toast.success('Category updated successfully');
+      } else {
+        await addCategory(form);
+        toast.success('Category added successfully');
+      }
 
-    setCategories(getCategories());
-    setDialogOpen(false);
-    setEditingCategory(null);
-    setForm({ name: '', slug: '', image: '' });
+      const updatedCategories = await getCategories();
+      setCategories(updatedCategories);
+      setDialogOpen(false);
+      setEditingCategory(null);
+      setForm({ name: '', slug: '', image: '' });
+    } catch (error) {
+      toast.error('Operation failed');
+    }
   };
 
   const handleEdit = (category: Category) => {
@@ -54,11 +67,16 @@ export default function CategoriesManagement() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this category?')) {
-      deleteCategory(id);
-      setCategories(getCategories());
-      toast.success('Category deleted successfully');
+      try {
+        await deleteCategory(id);
+        const updatedCategories = await getCategories();
+        setCategories(updatedCategories);
+        toast.success('Category deleted successfully');
+      } catch (error) {
+        toast.error('Delete failed');
+      }
     }
   };
 
@@ -93,7 +111,7 @@ export default function CategoriesManagement() {
           </div>
         ) : (
           categories.map((category) => (
-            <div key={category.id} className="gradient-card rounded-2xl border border-border p-6 group">
+            <div key={category._id} className="gradient-card rounded-2xl border border-border p-6 group">
               <div className="flex items-start justify-between mb-4">
                 <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center">
                   <span className="text-xs text-muted-foreground">IMG</span>
@@ -102,7 +120,7 @@ export default function CategoriesManagement() {
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(category)}>
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(category.id)}>
+                  <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(category._id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
